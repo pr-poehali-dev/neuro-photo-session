@@ -432,9 +432,9 @@ const Index = () => {
                           <SelectValue placeholder="Выберите тариф" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="basic">Базовый - от 1990₽</SelectItem>
-                          <SelectItem value="standard">Стандарт - от 2990₽</SelectItem>
-                          <SelectItem value="premium">Премиум - от 3490₽</SelectItem>
+                          <SelectItem value="basic">5 фото • 1 стиль - от 1990₽</SelectItem>
+                          <SelectItem value="standard">15 фото • 3 стиля - от 2990₽</SelectItem>
+                          <SelectItem value="premium">30 фото • безлимит стилей - от 3490₽</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
