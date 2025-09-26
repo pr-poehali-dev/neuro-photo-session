@@ -2,10 +2,29 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [selectedModel, setSelectedModel] = useState('');
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    description: '',
+    tariff: '',
+    contactMethods: {
+      whatsapp: false,
+      telegram: false
+    },
+    photos: [] as File[]
+  });
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -15,6 +34,40 @@ const Index = () => {
         block: 'start'
       });
     }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setOrderForm(prev => ({
+        ...prev,
+        photos: [...prev.photos, ...newFiles]
+      }));
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    setOrderForm(prev => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleContactMethodChange = (method: 'whatsapp' | 'telegram', checked: boolean) => {
+    setOrderForm(prev => ({
+      ...prev,
+      contactMethods: {
+        ...prev.contactMethods,
+        [method]: checked
+      }
+    }));
+  };
+
+  const handleSubmitOrder = () => {
+    // Здесь будет логика отправки заказа
+    console.log('Заказ отправлен:', orderForm);
+    setIsOrderDialogOpen(false);
+    // Можно добавить уведомление об успешной отправке
   };
 
   const aiModels = [
@@ -236,10 +289,169 @@ const Index = () => {
               загрузите фото и получите результат за 24 часа.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" variant="secondary" className="bg-white text-ai-blue hover:bg-white/90 px-8 py-4 text-lg">
-                <Icon name="ArrowRight" size={20} className="mr-2" />
-                Оформить заказ
-              </Button>
+              <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="lg" variant="secondary" className="bg-white text-ai-blue hover:bg-white/90 px-8 py-4 text-lg">
+                    <Icon name="ArrowRight" size={20} className="mr-2" />
+                    Оформить заказ
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-heading">Оформление заказа</DialogTitle>
+                    <DialogDescription>
+                      Заполните форму, и мы свяжемся с вами для уточнения деталей
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-6 py-4">
+                    {/* ФИО */}
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">ФИО заказчика *</Label>
+                      <Input
+                        id="fullName"
+                        placeholder="Введите ваши ФИО"
+                        value={orderForm.fullName}
+                        onChange={(e) => setOrderForm(prev => ({ ...prev, fullName: e.target.value }))}
+                      />
+                    </div>
+
+                    {/* Телефон */}
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Номер телефона *</Label>
+                      <Input
+                        id="phone"
+                        placeholder="+7 (___) ___-__-__"
+                        value={orderForm.phone}
+                        onChange={(e) => setOrderForm(prev => ({ ...prev, phone: e.target.value }))}
+                      />
+                    </div>
+
+                    {/* Способы связи */}
+                    <div className="space-y-3">
+                      <Label>Желаемые способы связи</Label>
+                      <div className="flex space-x-6">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="whatsapp"
+                            checked={orderForm.contactMethods.whatsapp}
+                            onCheckedChange={(checked) => handleContactMethodChange('whatsapp', checked as boolean)}
+                          />
+                          <Label htmlFor="whatsapp" className="flex items-center space-x-2 cursor-pointer">
+                            <Icon name="MessageCircle" size={16} />
+                            <span>WhatsApp</span>
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="telegram"
+                            checked={orderForm.contactMethods.telegram}
+                            onCheckedChange={(checked) => handleContactMethodChange('telegram', checked as boolean)}
+                          />
+                          <Label htmlFor="telegram" className="flex items-center space-x-2 cursor-pointer">
+                            <Icon name="Send" size={16} />
+                            <span>Telegram</span>
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Электронная почта *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="example@mail.com"
+                        value={orderForm.email}
+                        onChange={(e) => setOrderForm(prev => ({ ...prev, email: e.target.value }))}
+                      />
+                    </div>
+
+                    {/* Описание пожеланий */}
+                    <div className="space-y-2">
+                      <Label htmlFor="description">Описание ваших пожеланий</Label>
+                      <Textarea
+                        id="description"
+                        placeholder="Опишите какой стиль, настроение или особенности вы хотели бы видеть в фотографиях..."
+                        rows={4}
+                        value={orderForm.description}
+                        onChange={(e) => setOrderForm(prev => ({ ...prev, description: e.target.value }))}
+                      />
+                    </div>
+
+                    {/* Загрузка фотографий */}
+                    <div className="space-y-3">
+                      <Label htmlFor="photos">Загрузка исходных фотографий *</Label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <input
+                          id="photos"
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                        <Label htmlFor="photos" className="cursor-pointer">
+                          <Icon name="Upload" size={32} className="mx-auto mb-2 text-gray-400" />
+                          <p className="text-sm text-gray-600">
+                            Нажмите для выбора фотографий или перетащите их сюда
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Поддерживаются: JPG, PNG, HEIC (до 10 файлов)
+                          </p>
+                        </Label>
+                      </div>
+                      
+                      {/* Предпросмотр загруженных фото */}
+                      {orderForm.photos.length > 0 && (
+                        <div className="grid grid-cols-3 gap-2 mt-3">
+                          {orderForm.photos.map((file, index) => (
+                            <div key={index} className="relative group">
+                              <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-600 p-2">
+                                <Icon name="Image" size={20} />
+                                <span className="ml-1 truncate">{file.name}</span>
+                              </div>
+                              <button
+                                onClick={() => removePhoto(index)}
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Icon name="X" size={12} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Выбор тарифа */}
+                    <div className="space-y-2">
+                      <Label htmlFor="tariff">Выбор тарифа *</Label>
+                      <Select value={orderForm.tariff} onValueChange={(value) => setOrderForm(prev => ({ ...prev, tariff: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите тариф" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="basic">Базовый - от 1990₽</SelectItem>
+                          <SelectItem value="standard">Стандарт - от 2990₽</SelectItem>
+                          <SelectItem value="premium">Премиум - от 3490₽</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Кнопка отправки */}
+                    <Button 
+                      onClick={handleSubmitOrder}
+                      className="w-full bg-ai-blue hover:bg-ai-blue/90 text-white py-3 text-lg"
+                      size="lg"
+                    >
+                      <Icon name="Check" size={20} className="mr-2" />
+                      Сделать предварительный заказ
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8 py-4 text-lg">
                 <Icon name="MessageCircle" size={20} className="mr-2" />
                 Задать вопрос
