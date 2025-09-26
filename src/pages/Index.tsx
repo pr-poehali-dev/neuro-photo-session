@@ -70,27 +70,27 @@ const Index = () => {
     // Можно добавить уведомление об успешной отправке
   };
 
-  const aiModels = [
+  const tariffPlans = [
     {
-      name: 'DALL-E 3',
-      description: 'Фотореалистичные портреты высокого качества',
-      features: ['Высокая детализация', 'Естественные позы', 'Профессиональное освещение'],
+      name: 'Базовый',
+      description: '5 фото • 1 стиль • простая обработка',
+      features: ['5 готовых фотографий', '1 художественный стиль', 'Стандартная обработка'],
+      price: 'от 1990₽',
+      color: 'bg-neural'
+    },
+    {
+      name: 'Стандарт',
+      description: '15 фото • 3 стиля • расширенная обработка',
+      features: ['15 готовых фотографий', '3 различных стиля', 'Премиум обработка'],
       price: 'от 2990₽',
       color: 'bg-ai-blue'
     },
     {
-      name: 'Midjourney',
-      description: 'Художественные и стилизованные изображения',
-      features: ['Творческие стили', 'Уникальная эстетика', 'Концептуальные решения'],
+      name: 'Премиум',
+      description: '30 фото • безлимит стилей • полная обработка',
+      features: ['30 готовых фотографий', 'Безлимит стилей', 'Индивидуальный подход'],
       price: 'от 3490₽',
       color: 'bg-ai-purple'
-    },
-    {
-      name: 'Stable Diffusion',
-      description: 'Гибкая настройка и кастомизация',
-      features: ['Точный контроль', 'Быстрая генерация', 'Множество стилей'],
-      price: 'от 1990₽',
-      color: 'bg-neural'
     }
   ];
 
@@ -173,41 +173,41 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-slide-up">
             <Badge className="mb-4 bg-ai-purple/10 text-ai-purple border-ai-purple/20">
-              AI-модели
+              Тарифы
             </Badge>
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 mb-6">
-              Выберите свою AI-модель
+              Выберите свой тариф
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Каждая модель обладает уникальными возможностями и стилистикой. 
-              Выберите подходящую для вашей задачи.
+              Каждый тариф включает различное количество фотографий и стилей. 
+              Выберите подходящий для ваших целей.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {aiModels.map((model, index) => (
+            {tariffPlans.map((tariff, index) => (
               <Card 
-                key={model.name}
+                key={tariff.name}
                 className={`relative group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
-                  selectedModel === model.name ? 'ring-2 ring-ai-blue shadow-lg' : ''
+                  selectedModel === tariff.name ? 'ring-2 ring-ai-blue shadow-lg' : ''
                 }`}
-                onClick={() => setSelectedModel(selectedModel === model.name ? '' : model.name)}
+                onClick={() => setSelectedModel(selectedModel === tariff.name ? '' : tariff.name)}
               >
-                <div className={`absolute top-0 left-0 w-full h-1 ${model.color} rounded-t-lg`}></div>
+                <div className={`absolute top-0 left-0 w-full h-1 ${tariff.color} rounded-t-lg`}></div>
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl font-heading font-semibold text-gray-900 flex items-center justify-between">
-                    {model.name}
-                    {selectedModel === model.name && (
+                    {tariff.name}
+                    {selectedModel === tariff.name && (
                       <Icon name="Check" size={20} className="text-ai-blue" />
                     )}
                   </CardTitle>
                   <CardDescription className="text-gray-600">
-                    {model.description}
+                    {tariff.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3 mb-6">
-                    {model.features.map((feature, featureIndex) => (
+                    {tariff.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center text-sm text-gray-600">
                         <Icon name="Sparkles" size={14} className="mr-2 text-ai-blue" />
                         {feature}
@@ -216,11 +216,11 @@ const Index = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-heading font-bold text-gray-900">
-                      {model.price}
+                      {tariff.price}
                     </span>
                     <Button 
-                      variant={selectedModel === model.name ? "default" : "outline"}
-                      className={selectedModel === model.name ? "bg-ai-blue hover:bg-ai-blue/90" : ""}
+                      variant={selectedModel === tariff.name ? "default" : "outline"}
+                      className={selectedModel === tariff.name ? "bg-ai-blue hover:bg-ai-blue/90" : ""}
                     >
                       Выбрать
                     </Button>
