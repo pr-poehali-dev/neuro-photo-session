@@ -7,6 +7,16 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [selectedModel, setSelectedModel] = useState('');
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   const aiModels = [
     {
       name: 'DALL-E 3',
@@ -71,11 +81,20 @@ const Index = () => {
               Безграничные возможности стиля и творчества.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="bg-ai-blue hover:bg-ai-blue/90 text-white px-8 py-4 text-lg">
+              <Button 
+                size="lg" 
+                className="bg-ai-blue hover:bg-ai-blue/90 text-white px-8 py-4 text-lg"
+                onClick={() => scrollToSection('order-section')}
+              >
                 <Icon name="Camera" size={20} className="mr-2" />
                 Создать фотосессию
               </Button>
-              <Button variant="outline" size="lg" className="border-ai-blue text-ai-blue hover:bg-ai-blue/5 px-8 py-4 text-lg">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-ai-blue text-ai-blue hover:bg-ai-blue/5 px-8 py-4 text-lg"
+                onClick={() => scrollToSection('portfolio-section')}
+              >
                 <Icon name="Play" size={20} className="mr-2" />
                 Посмотреть примеры
               </Button>
@@ -161,7 +180,7 @@ const Index = () => {
       </section>
 
       {/* Portfolio Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section id="portfolio-section" className="py-16 lg:py-24 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge className="mb-4 bg-neural/10 text-neural border-neural/20">
@@ -206,7 +225,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-24 bg-gradient-to-r from-ai-blue via-ai-purple to-neural text-white">
+      <section id="order-section" className="py-16 lg:py-24 bg-gradient-to-r from-ai-blue via-ai-purple to-neural text-white">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-heading font-bold mb-6">
